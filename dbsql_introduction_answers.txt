@@ -1,0 +1,97 @@
+Exercises
+
+1. What data types do each of these values represent?
+
+  1. "A Clockwork Orange"
+  2. 42
+  3. 09/02/1945
+  4. 98.7
+  5. $15.99
+
+>Depends on who you ask. In general terms:
+
+  1) string
+  2) integer
+  3) date or string
+  4) float
+  5) string or money or formatted float
+
+2. Explain when a database would be used. Explain when a text file would be used.
+
+>You'd use a simple text file to store your data if only one user was going to access it at a time, and I think you'd typically read the whole thing in at once. Changing something in the text file requires the whole file be "updated", by changing something in the source code itself. So, it's for something that is kind of static, maybe just something that displays, or is a private data collection or something. A database would be used by multiple users who can access it at the same time, and the data can be searched and updated more easily. So, you'd use it when you want these features, and the data to persist someplace outside of your program.
+
+3. Describe one difference between SQL and other programming languages.
+
+>SQL is declarative instead of imperative. Instead of explaining each step you want the computer to do, one step at a time, you just tell the computer what you want to happen or get, and it interprets that into a bunch of imperative steps you don't see underneath. You are abstracted away from those steps.
+
+4. In your own words, explain how the pieces of a database system fit together at a high level.
+
+>There is an interface, where you can access and use the data. There is data that is managed by an engine, and there is a structure that is defined so the data is organized. For you!
+
+5. Explain the meaning of table, row, column, and value.
+
+>Tables are a grid of rows and columns, each row representing one "thing/collection", each cell in that row having a value of data of varying types which are given meaning by the designation of the column they are in.
+
+6. List three data types that can be used in a table.
+
+>Seems like something string-ish, something numeric-ish, and maybe something bit-ish or binary-ish.
+
+7. Given this payments table, provide an English description of the following queries and include their results:
+
+SELECT date, amount
+  FROM payments;
+
+>"Give me the date and amount of everything in the payments database."
+
+  SELECT amount
+  FROM payments
+  WHERE amount > 500;
+
+>"Give me every amount that is greater than 500 in the payments database."
+
+  SELECT *
+  FROM payments
+  WHERE payee = 'Mega Foods';
+
+>"Give me everything in the payments database with a payee of 'Mega Foods'."
+
+8. Given this `users` table, write SQL queries using the following criteria and include the output:
+
+userid | name              | email                        | signup
+1      | Aleesia Algorithm | aleesia.algorithm@uw.edu     | 2014-10-24
+2      | DeAndre Data      | datad@comcast.net            | 2008-01-20
+3      | Chris Collection  | chris.collection@outlook.com | 2012-01-20
+4      | Brandy Boolean    | bboolean@nasa.gov            | 1999-10-15
+
+* The email and sign-up date for the user named DeAndre Data.
+>
+SELECT email, signup
+FROM users
+WHERE name = 'DeAndre Data';
+
+returns:
+email             | signup
+datad@comcast.net | 2008-01-20
+
+* The user ID for the user with email 'aleesia.algorithm@uw.edu'.
+>
+SELECT userid
+FROM users
+WHERE email = 'aleesia.algorithm@uw.edu';
+
+returns:
+userid
+1
+
+* All the columns for the user ID equal to 4.
+>
+SELECT *
+FROM users
+WHERE userid = 4;
+
+returns:
+userid | name           | email             | signup
+4      | Brandy Boolean | bboolean@nasa.gov | 1999-10-15
+
+
+
