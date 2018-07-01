@@ -1,0 +1,123 @@
+Exercises
+
+1. How do you find related data held in two separate data tables?
+>
+You include a JOIN clause specifying some data in each table that is related.
+
+2. Explain, in your own words, the difference between an INNER JOIN, LEFT OUTER JOIN, and RIGHT OUTER JOIN. Give a real-world example for each.
+>
+An INNER JOIN will produce a result table that has a row for each row that was common between tables. So, we have a table of mobile phone models and we JOIN that table with two other tables from two different service providers and get a table of mobile phone models that are common between the carriers.
+
+A LEFT OUTER JOIN will have every row in the first table represented, and only matching rows from the second table represented. So, a table of all mobile phone models LEFT OUTER JOINed with tables of different service providers will give us all of the mobile phone rows, and when there's a match the data from the service provider tables.
+
+A RIGHT OUTER JOIN does that, but flipped, so a table of phones carried at a certain store RIGHT OUTER JOINed with a table of all phone offered by a service provider would include every row of phones offered by the service provider but only data from the store table where it matched.
+
+3. Define primary key and foreign key. Give a real-world example for each.
+>
+The primary key is unique in a table. It will match up with a key in another table, the foreign key, and that key may or may not be unique. So, one table may have all of the unique model categories of Fender guitars (Stratocaster, Telecaster, etc.), and another table may have the multiple variations of each model (Standard Telecaster, Deluxe Telecaster, etc.).
+
+4. Define aliasing.
+>
+We can redefine the name reference for a table to a shorter name, and then use that alias for the rest of the query statement. Kind of like "Import 'something' as 'something-else';" in JavaScript. Give it a more better name while using it in the program.
+
+5. Change this query so that you are using aliasing:
+   SELECT professor.name, compensation.salary,
+   compensation.vacation_days FROM professor JOIN
+   compensation ON professor.id =
+   compensation.professor_id;
+>
+   SELECT professor.name, compensation.salary, compensation.vacation_days
+   FROM professor AS p
+   JOIN compensation AS c
+   ON p.id = c.professor_id;
+
+6. Why would you use a NATURAL JOIN? Give a real-world example.
+>
+When you don't want to specify a crazy long list of columns to match on in a USING clause, but just automatically use all the columns that the tables have in common. So, maybe a table that has all of the songs a wedding band can play with columns for title, artist, tempo, duration, and a table that has the songs the lovely couple wants to hear, also with title and artist.
+
+7. Using this Employee schema and data (http://sqlfiddle.com/#!17/b4c92), write queries to find the following information:
+  * List all employees and all shifts.
+>
+Hard to tell what was being asked here, so I just did this:
+
+SELECT employees.name, shifts.date, shifts.start_time, shifts.end_time
+FROM scheduled_shifts
+JOIN employees ON scheduled_shifts.employee_id = employees.id
+JOIN shifts ON scheduled_shifts.shift_id = shifts.id;
+
+http://sqlfiddle.com/#!17/b4c92/1376/0
+
+8. Using this Adoption schema and data (http://sqlfiddle.com/#!17/ac120), please write queries to retrieve the following information and include the results:
+  * Create a list of all volunteers. If the volunteer is fostering a dog, include each dog as well.
+>
+SELECT volunteers.first_name AS volunteer_first_name, volunteers.last_name AS volunteer_last_name, dogs.name AS fostered_dog
+FROM volunteers
+LEFT OUTER JOIN dogs ON volunteers.foster_dog_id = dogs.id;
+
+http://sqlfiddle.com/#!17/ac120/5071/0
+
+  * The cat's name, adopter's name, and adopted date for each cat adopted within the past month to be displayed as part of the "Happy Tail" social media promotion which posts recent successful adoptions.
+>
+SELECT cats.name AS cats_name, adopters.first_name AS adopters_first_name, adopters.last_name AS adopters_last_name, cat_adoptions.date AS adoption_date
+FROM cat_adoptions
+JOIN adopters ON cat_adoptions.adopter_id = adopters.id
+JOIN cats ON cat_adoptions.cat_id = cats.id
+WHERE cat_adoptions.date > (CURRENT_DATE - INTERVAL '31 DAYS');
+
+http://sqlfiddle.com/#!17/ac120/5081/0
+
+  * Create a list of adopters who have not yet chosen a dog to adopt.
+>
+SELECT * 
+FROM adopters
+LEFT JOIN dog_adoptions ON adopters.id = dog_adoptions.adopter_id
+WHERE dog_adoptions.adopter_id IS NULL;
+
+http://sqlfiddle.com/#!17/ac120/5117/0
+
+  * Lists of all cats and all dogs who have not been adopted.
+>
+I misread this and made a single 'list' instead of two separte lists. Thank goodness for Stack Overflow!
+
+(SELECT dogs.name AS name
+FROM dogs
+LEFT JOIN dog_adoptions ON dogs.id = dog_adoptions.dog_id
+WHERE dog_adoptions.dog_id IS NULL)
+UNION ALL
+(SELECT cats.name AS name
+FROM cats
+LEFT JOIN cat_adoptions ON cats.id = cat_adoptions.cat_id
+WHERE cat_adoptions.cat_id IS NULL);
+
+http://sqlfiddle.com/#!17/ac120/5112/0
+
+  * The name of the person who adopted Rosco.
+>
+SELECT adopters.first_name AS adopter_first_name, adopters.last_name AS adopter_last_name, dogs.name AS dogs_name
+from adopters
+RIGHT JOIN dog_adoptions ON adopters.id = dog_adoptions.adopter_id
+JOIN dogs ON dog_adoptions.dog_id = dogs.id;
+
+http://sqlfiddle.com/#!17/ac120/5116/0
+
+9. Using this Library schema and data (http://sqlfiddle.com/#!17/62f88), write queries applying the following scenarios and include the results:
+  * To determine if the library should buy more copies of a given book, please provide the names and position, in order, of all of the patrons with a hold (request for a book with all copies checked out) on "Advanced Potion-Making".
+>
+SELECT patrons.name AS patron_name, holds.rank AS position
+FROM patrons
+JOIN holds ON holds.patron_id = patrons.id
+JOIN books ON holds.isbn = books.isbn WHERE books.title = 'Advanced Potion-Making' ORDER BY holds.rank;
+
+http://sqlfiddle.com/#!17/62f88/4548/0
+
+  * List all of the library patrons. If they have one or more books checked out, list the books with the patrons.
+>
+SELECT patrons.name AS patrons_name, string_agg(books.title, ', ') AS books
+FROM patrons
+RIGHT OUTER JOIN transactions ON patrons.id = transactions.patron_id
+JOIN books ON transactions.isbn = books.isbn GROUP BY patrons.name;
+
+http://sqlfiddle.com/#!17/62f88/4554/0
+
+
+
